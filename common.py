@@ -81,7 +81,7 @@ if(len(arguments) >= 2):
                 subprocess.run('npm install {} --prefix {}/libs'.format(package_name, script_directory), shell=True, capture_output=True, text=True)
                 add_dependency_to_package_json(package_name, save_dev, script_directory)
 
-                common_directory = os.path.join(current_working_directory, 'common')
+                common_directory = os.path.join(current_working_directory, 'node_modules')
                 createDirectory(common_directory)
 
                 js_content = """const {} = require('{}');
@@ -116,15 +116,6 @@ module.exports = {};
             if(arguments[3]):
                 package_name = arguments[3]
 
-                js_path = os.path.join(current_working_directory, 'common', "{}.js".format(package_name))
+                js_path = os.path.join(current_working_directory, 'node_modules', "{}.js".format(package_name))
                 if os.path.exists(js_path):
                     os.remove(js_path)
-
-
-    elif arguments[1] == 'build':
-        subprocess.run('npm install', cwd=current_working_directory, shell=True, capture_output=True, text=True)
-        archives_in_directory = os.listdir(f'{current_working_directory}/common')
-        js_archives = [archive for archive in archives_in_directory if archive.endswith(".js")]
-        for archive in js_archives:
-            path = os.path.join(f'{current_working_directory}/common', archive).replace('\\', '/')
-            update_file_imports(path, f'{script_directory}/libs/node_modules/'.replace('\\', '/'), '')
